@@ -1,5 +1,6 @@
 import Image from "next/image";
 import React from "react";
+import { Button } from "./ui/button";
 
 function Navbar() {
   return (
@@ -11,6 +12,11 @@ function Navbar() {
         height={100}
         className="rounded-full"
       />
+      <div className="flex-grow" />
+      <Button variant="outline" className="ml-5">
+        {" "}
+        + New Chat
+      </Button>
     </nav>
   );
 }
