@@ -39,7 +39,7 @@ function ChatMessages({
             <div className="flex-shrink-0">
               <Image
                 alt="profile"
-                src={isUser ? "/assets/user.png" : "/assets/robot.jpeg"}
+                src={isUser ? "/assets/logo.png" : "/assets/robot.jpeg"}
                 width={32}
                 height={32}
                 className="rounded-full"
