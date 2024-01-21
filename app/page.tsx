@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 export default function Home() {
   const [thread, setThread] = useState<string | null>(null);
   const [run, setRun] = useState<string | null>(null);
-  const [prompt, setPrompt] = useState<string | null>(null);
+  const [prompt, setPrompt] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [messages, setMessages] = useState<ThreadMessage[]>([]);
 
@@ -50,7 +50,7 @@ export default function Home() {
       const isComplete = runStatus.status === "completed";
       if (isComplete) {
         // get messages and set run to null
-        setPrompt(null);
+        setPrompt("");
         if (!thread) return;
         getMessages(thread);
         setRun(null);
@@ -88,6 +88,7 @@ export default function Home() {
     console.log(data);
     setThread(data.thread);
     setRun(data.run);
+    setPrompt("");
     // add thread id to query string
     const url = new URL(window.location.href);
     url.searchParams.set("thread", data.thread);
@@ -108,6 +109,7 @@ export default function Home() {
             placeholder="Prompt"
             name="prompt"
             onChange={(e) => setPrompt(e.target.value)}
+            value={prompt}
             type="text"
             autoComplete="off"
             required
