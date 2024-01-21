@@ -13,10 +13,11 @@ function Navbar() {
         className="rounded-full"
       />
       <div className="flex-grow" />
-      <Button variant="outline" className="ml-5">
-        {" "}
-        + New Chat
-      </Button>
+      <a href="/">
+        <Button variant="outline" className="ml-5">
+          + New Chat
+        </Button>
+      </a>
     </nav>
   );
 }
