@@ -1,7 +1,9 @@
 "use client";
 import ChatMessages from "@/components/chat-messages";
+import Introduction from "@/components/introduction";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
 import { ThreadMessage } from "@/lib/openai";
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -29,9 +31,16 @@ export default function Home() {
     const data = await response.json();
     const allMessages = data.messages as ThreadMessage[];
     setMessages(allMessages);
-    console.log(allMessages);
     setLoading(false);
   };
+
+  // scroll to bottom on messages change or loading change
+  useEffect(() => {
+    window.scrollTo({
+      top: document.body.offsetHeight,
+      behavior: "smooth",
+    });
+  }, [messages, loading]);
 
   // lishen for run to complete periodically
   useEffect(() => {
@@ -62,11 +71,13 @@ export default function Home() {
   // use effect to get messages on thread change on 1st render
   useEffect(() => {
     // get thread from query string
+    setLoading(true);
     const url = new URL(window.location.href);
-    console.log({ url });
     const thread = url.searchParams.get("thread");
-    console.log({ thread });
-    if (!thread) return;
+    if (!thread) {
+      setLoading(false);
+      return;
+    }
     setThread(thread);
     getMessages(thread);
   }, [thread]);
@@ -85,7 +96,6 @@ export default function Home() {
     });
 
     const data = await response.json();
-    console.log(data);
     setThread(data.thread);
     setRun(data.run);
     setPrompt("");
@@ -97,8 +107,15 @@ export default function Home() {
   };
 
   return (
-    <>
-      <ChatMessages messages={messages} />
+    <div>
+      <div className="pb-36">
+        {messages.length || loading ? (
+          <ChatMessages messages={messages} isLoading={loading} />
+        ) : (
+          <Introduction />
+        )}
+      </div>
+
       <form
         className="flex flex-row fixed bottom-0 p-4 w-full justify-center "
         onSubmit={handlePromptSubmit}
@@ -119,6 +136,6 @@ export default function Home() {
           </Button>
         </div>
       </form>
-    </>
+    </div>
   );
 }

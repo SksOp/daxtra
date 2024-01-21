@@ -6,19 +6,30 @@ import {
   ThreadMessage,
 } from "openai/resources/beta/threads/index.mjs";
 import React from "react";
+import remarkGfm from "remark-gfm";
+import Markdown from "react-markdown";
+import { Skeleton } from "./ui/skeleton";
 
-function ChatMessages({ messages }: { messages: ThreadMessage[] }) {
+function ChatMessages({
+  messages,
+  isLoading,
+}: {
+  messages: ThreadMessage[];
+  isLoading: boolean;
+}) {
   const reversedMessages = [...messages].reverse();
-  console.log(reversedMessages);
   return (
-    <div className="flex flex-col gap-4 w-full items-center">
+    <div
+      id="chat-messages"
+      className="flex flex-col gap-4 px-4 w-full items-center"
+    >
       {reversedMessages.map((message) => {
         const isUser = message.role === "user";
         return (
           <div
             key={message.id}
             className={cn(
-              "flex gap-4 p-5 py-10 max-w-xl rounded-sm w-full ",
+              "flex gap-4 p-5 py-10 max-w-4xl rounded-sm w-full ",
               // isUser ? "justify-end" : "justify-start",
               // isUser ? "flex-row-reverse" : "flex-row",
               isUser ? "" : "bg-gray-200",
@@ -34,14 +45,19 @@ function ChatMessages({ messages }: { messages: ThreadMessage[] }) {
                 className="rounded-full"
               />
             </div>
-            <>
+            <div>
               {message.content.map((content) => (
                 <Content content={content} />
               ))}
-            </>
+            </div>
           </div>
         );
       })}
+      {isLoading && (
+        <Skeleton className="w-full max-w-4xl rounded-sm p-5 h-36">
+          Processing ...
+        </Skeleton>
+      )}
     </div>
   );
 }
@@ -63,6 +79,7 @@ function Content({
       />
     );
   } else {
-    return <p>{content["text"].value}</p>;
+    var data = content["text"].value;
+    return <Markdown remarkPlugins={[remarkGfm]}>{data}</Markdown>;
   }
 }
