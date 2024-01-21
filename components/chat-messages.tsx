@@ -6,7 +6,12 @@ import {
   ThreadMessage,
 } from "openai/resources/beta/threads/index.mjs";
 import React from "react";
+import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
+import rehypeHighlight from "rehype-highlight";
+import remarkParse from "remark-parse";
+import remarkStringify from "remark-stringify";
+import remrkMath from "remark-math";
 import Markdown from "react-markdown";
 import { Skeleton } from "./ui/skeleton";
 
@@ -46,9 +51,16 @@ function ChatMessages({
               />
             </div>
             <div>
-              {message.content.map((content) => (
-                <Content content={content} />
-              ))}
+              <p
+                // // for all list items in the markdown add a pd left
+                // className="[&>ul>li]:pl-4 [&>ul>li]:py-2"
+                // // for all list items in the markdown add a bullet
+                className="[&>ul>li]:before:content-['•'] [&>ul>li]:pl-4 [&>ul>li]:py-2 "
+              >
+                {message.content.map((content) => (
+                  <Content content={content} />
+                ))}
+              </p>
             </div>
           </div>
         );
@@ -80,6 +92,14 @@ function Content({
     );
   } else {
     var data = content["text"].value;
-    return <Markdown remarkPlugins={[remarkGfm]}>{data}</Markdown>;
+    console.log(data);
+    return (
+      <Markdown
+        rehypePlugins={[rehypeRaw, rehypeHighlight]}
+        remarkPlugins={[remarkGfm, remarkParse, remarkStringify, remrkMath]}
+      >
+        {data}
+      </Markdown>
+    );
   }
 }
