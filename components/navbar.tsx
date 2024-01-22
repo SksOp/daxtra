@@ -14,7 +14,10 @@ function Navbar() {
       />
       <div className="flex-grow" />
       <a href="/">
-        <Button variant="outline" className="ml-5">
+        <Button
+          variant="outline"
+          className="ml-5 hover:bg-[#5b9e35] hover:text-white"
+        >
           + New Chat
         </Button>
       </a>

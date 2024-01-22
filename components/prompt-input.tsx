@@ -37,7 +37,7 @@ function PromptInput({
         <Button
           type="submit"
           disabled={loading}
-          className="bg-primary hover:bg-foreground "
+          className="bg-primary hover:bg-[#5b9e35] "
         >
           Generate
         </Button>
