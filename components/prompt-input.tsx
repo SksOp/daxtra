@@ -34,7 +34,11 @@ function PromptInput({
           required
           className="h-full"
         />
-        <Button type="submit" disabled={loading}>
+        <Button
+          type="submit"
+          disabled={loading}
+          className="bg-primary hover:bg-foreground "
+        >
           Generate
         </Button>
       </div>
