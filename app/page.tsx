@@ -1,12 +1,13 @@
 "use client";
 import ChatMessages from "@/components/chat-messages";
 import Introduction from "@/components/introduction";
+import PromptInput from "@/components/prompt-input";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ThreadMessage } from "@/lib/openai";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function Home() {
   const [thread, setThread] = useState<string | null>(null);
@@ -14,6 +15,8 @@ export default function Home() {
   const [prompt, setPrompt] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [messages, setMessages] = useState<ThreadMessage[]>([]);
+
+  const ref = useRef<HTMLDivElement>(null);
 
   // get messages
   const getMessages = async (thread: string) => {
@@ -36,10 +39,12 @@ export default function Home() {
 
   // scroll to bottom on messages change or loading change
   useEffect(() => {
-    window.scrollTo({
-      top: document.body.offsetHeight,
-      behavior: "smooth",
-    });
+    // window.scrollTo({
+    //   top: document.body.offsetHeight,
+    //   behavior: "smooth",
+    // });
+    if (!ref.current) return;
+    ref.current.scrollTop = ref.current.scrollHeight;
   }, [messages, loading]);
 
   // lishen for run to complete periodically
@@ -106,36 +111,25 @@ export default function Home() {
     window.history.replaceState({}, "", url.href);
   };
 
-  return (
-    <div>
-      <div className="pb-36">
-        {messages.length || loading ? (
-          <ChatMessages messages={messages} isLoading={loading} />
-        ) : (
-          <Introduction />
-        )}
-      </div>
+  const renderMessages =
+    messages.length || loading ? (
+      <ChatMessages messages={messages} isLoading={loading} />
+    ) : (
+      <Introduction />
+    );
 
-      <form
-        className="flex flex-row fixed bottom-0 p-4 w-full justify-center "
-        onSubmit={handlePromptSubmit}
-      >
-        <div className="flex flex-row items-center w-full pb-10 px-10 py-5 max-w-2xl gap-3 rounded-sm justify-center shadow-md border-2 bg-muted-foreground/20">
-          <Input
-            id="prompt"
-            placeholder="Prompt"
-            name="prompt"
-            onChange={(e) => setPrompt(e.target.value)}
-            value={prompt}
-            type="text"
-            autoComplete="off"
-            required
-          />
-          <Button type="submit" disabled={loading}>
-            Generate
-          </Button>
-        </div>
-      </form>
+  return (
+    <div className="flex relative flex-row">
+      <PromptInput
+        handlePromptSubmit={handlePromptSubmit}
+        prompt={prompt}
+        setPrompt={setPrompt}
+        loading={loading}
+        className="sticky w-[50%] flex-grow top-0 left-0 right-0 z-10 border-r-2"
+      />
+      <div ref={ref} className="flex-grow w-[50%] max-h-[80vh] overflow-auto ">
+        {renderMessages}
+      </div>
     </div>
   );
 }

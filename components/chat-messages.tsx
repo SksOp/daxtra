@@ -55,7 +55,10 @@ function ChatMessages({
                 // // for all list items in the markdown add a pd left
                 // className="[&>ul>li]:pl-4 [&>ul>li]:py-2"
                 // // for all list items in the markdown add a bullet
-                className="[&>ul>li]:before:content-['•'] [&>ul>li]:pl-4 [&>ul>li]:py-2 "
+                className={cn(
+                  "[&>ul>li]:before:content-['•'] [&>ul>li]:pl-4 [&>ul>li]:py-2 ",
+                  isUser ? "font-bold" : ""
+                )}
               >
                 {message.content.map((content) => (
                   <Content content={content} />
